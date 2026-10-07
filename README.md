@@ -5,7 +5,7 @@ A rude little memory game for overconfident monkeys.
 Remember the circles. Pick them again. Every correct round adds another one. One mistake and the monkey gets to judge you.
 
 <a href="https://konradbuilds.github.io/monkey-memory/">
-  <img src="./screenshot.jpg" alt="Monkey Memory game screenshot">
+  <img src="./screenshot.jpg" alt="Monkey Memory game screenshot" width="50%">
 </a>
 
 ## [PLAY HERE →](https://konradbuilds.github.io/monkey-memory/)
