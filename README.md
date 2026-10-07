@@ -1,33 +1,42 @@
 # Monkey Memory
 
-A rude little memory game for overconfident monkeys.
+A rude little pixel-art memory game.
 
-Remember the circles. Pick them again. Every correct round adds another one. One mistake and the monkey gets to judge you.
+Watch the bananas. Remember the spots. Post your score. Fail like an idiot.
 
 <a href="https://konradbuilds.github.io/monkey-memory/">
-  <img src="./screenshot.jpg" alt="Monkey Memory game screenshot" width="50%">
+  <img src="./screenshot.png" alt="Monkey Memory pixel-art game screenshot" width="50%">
 </a>
 
-## [PLAY HERE →](https://konradbuilds.github.io/monkey-memory/)
+## [▶ PLAY HERE](https://konradbuilds.github.io/monkey-memory/)
 
-No framework. No backend. No dependencies. Just 25 stupid circles and a monkey with an attitude problem.
+No framework. No backend. Just one lean HTML game, some pixel art, and a deeply unhelpful monkey.
 
 ### How it works
 
-- Starts with 3 circles to remember.
-- Correct answer adds one more next round.
-- Display time gradually gets shorter.
-- One wrong answer ends the run.
-- Best score stays on your device.
-- Share or copy your score with suitably annoying trash talk.
+- 5 × 5 board.
+- A few tiles reveal bananas.
+- Remember the spots.
+- Click the right tiles.
+- Score goes up. Confidence goes up. Then you die.
+- Best score is stored locally.
+- Native share where supported, copy fallback everywhere else.
+
+### Files
+
+- `index.html` — the game
+- `assets/monkey-face.png` — favicon / logo monkey
+- `assets/banana.png` — banana tile icon
+- `screenshot.png` — README screenshot
+- `monkey-memory-share.png` — social sharing image
 
 ### Version
 
-**1.1**
+**2.0**
 
 ### Author
 
-[Konrad Sroka](https://github.com/konradbuilds)
+[Konrad](https://konradbuilds.github.io/)
 
 ### License
 
