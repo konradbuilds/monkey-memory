@@ -5,14 +5,28 @@ Author URL: https://konradbuilds.github.io/
 Github URL: https://github.com/konradbuilds/monkey-memory
 Play URL: https://konradbuilds.github.io/monkey-memory/
 License: GNU General Public License v3.0
-Version: 0.1.55
+Version: 0.1.56
 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#fff8e8">
-<meta name="description" content="Remember the bananas. Pick their hiding places. An increasingly unreasonable memory game.">
+<meta name="description" content="Monkey Memory - Rude pixel-art memory game. Watch the bananas. Remember the spots.">
+<meta name="author" content="Konrad">
+<link rel="canonical" href="https://konradbuilds.github.io/monkey-memory/">
+<link rel="icon" type="image/png" href="./assets/monkey-face.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Monkey Memory">
+<meta property="og:title" content="Monkey Memory">
+<meta property="og:description" content="Watch the bananas. Remember the spots. Fail like an idiot.">
+<meta property="og:url" content="https://konradbuilds.github.io/monkey-memory/">
+<meta property="og:image" content="https://konradbuilds.github.io/monkey-memory/monkey-memory-share.png">
+<meta property="og:image:alt" content="Monkey Memory pixel-art game preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Monkey Memory">
+<meta name="twitter:description" content="Watch the bananas. Remember the spots. Fail like an idiot.">
+<meta name="twitter:image" content="https://konradbuilds.github.io/monkey-memory/monkey-memory-share.png">
 <title>Monkey Memory — Remember the damn bananas.</title>
 <style>
 
@@ -139,7 +153,7 @@ header { padding: 0; height: clamp(64px, 16svh, 125px); flex: none; }
 .game[data-state="failed"] .stage,
 .game[data-state="won"] .stage {
   position: absolute;
-  z-index: 3; 
+  z-index: 3;
   top: 50%; left: 50%;
   transform: translate(-50%, -35%);
   width: min(410px, calc(100% - 16px));
