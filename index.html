@@ -1,1134 +1,517 @@
-<!--
-Monkey Memory
-Version: 2.0
-Author: Konrad
-Author URL: https://konradbuilds.github.io/
-License: GNU General Public License v3.0
-License URL: https://www.gnu.org/licenses/gpl-3.0.html
--->
 <!doctype html>
+<!--
+Author: Konrad Sroka
+Author URL: https://konradbuilds.github.io/
+Github URL: https://github.com/konradbuilds/monkey-memory
+Play URL: https://konradbuilds.github.io/monkey-memory/
+License: GNU General Public License v3.0
+Version: 0.1.55
+-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f6f2e8">
-<meta name="description" content="Monkey Memory is a rude little pixel-art memory game. Watch the bananas. Remember the spots. Fail like an idiot.">
-<meta name="author" content="Konrad">
-<link rel="canonical" href="https://konradbuilds.github.io/monkey-memory/">
-<link rel="icon" type="image/png" href="./assets/monkey-face.png">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Monkey Memory">
-<meta property="og:title" content="Monkey Memory">
-<meta property="og:description" content="Watch the bananas. Remember the spots. Fail like an idiot.">
-<meta property="og:url" content="https://konradbuilds.github.io/monkey-memory/">
-<meta property="og:image" content="https://konradbuilds.github.io/monkey-memory/monkey-memory-share.png">
-<meta property="og:image:alt" content="Monkey Memory pixel-art game preview">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Monkey Memory">
-<meta name="twitter:description" content="Watch the bananas. Remember the spots. Fail like an idiot.">
-<meta name="twitter:image" content="https://konradbuilds.github.io/monkey-memory/monkey-memory-share.png">
-<title>Monkey Memory</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fff8e8">
+<meta name="description" content="Remember the bananas. Pick their hiding places. An increasingly unreasonable memory game.">
+<title>Monkey Memory — Remember the damn bananas.</title>
 <style>
+
 :root {
-  --paper: #efe3c4;
-  --paper-light: #fff8e8;
-  --ink: #160e08;
-  --brown: #9a6036;
-  --brown-dark: #4d2a17;
-  --brown-light: #c4834c;
-  --banana: #ffe13a;
-  --banana-dark: #c99200;
-  --cream: #f1d6ad;
-  --cream-dark: #cfa87e;
-  --red: #ef5967;
-  --panel: #fff8e9;
-  --pixel: 4px;
+    color-scheme: light;
+    --ink: #28180f;
+    --paper: #fff8e8;
+    --yellow: #ffda35;
+    --green: #35713b;
 }
-
-* {
-  box-sizing: border-box;
-}
-
-html,
+* { box-sizing: border-box; }
 body {
-  margin: 0;
-  min-height: 100%;
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
 }
-
-body {
-  min-height: 100dvh;
-  background:
-    linear-gradient(90deg, rgba(91, 58, 31, .035) 1px, transparent 1px) 0 0 / 24px 24px,
-    linear-gradient(rgba(91, 58, 31, .035) 1px, transparent 1px) 0 0 / 24px 24px,
-    var(--paper);
-  color: var(--ink);
-  font-family: "Courier New", Courier, monospace;
-  image-rendering: pixelated;
+button, a { -webkit-tap-highlight-color: transparent; }
+button { font: inherit; cursor: pointer; touch-action: manipulation; }
+button:disabled { cursor: default; }
+button:focus-visible, a:focus-visible { outline: 3px solid #1464af; outline-offset: 5px; }
+[hidden] { display: none !important; }
+.shell { width: min(1040px, 100% - 40px); margin: auto; }
+header { padding: 30px 0 18px; text-align: center; }
+.logo { width: min(680px, 100%); height: auto; display: block; margin: auto; }
+.tagline { margin: 16px 0 0; font-size: 14px; letter-spacing: .08em; }
+.game { max-width: 600px; margin: 12px auto 0; position: relative; }
+.stats { display: flex; justify-content: space-between; gap: 16px; padding: 16px 0; font-size: 13px; }
+.stats strong { font-size: 23px; margin-left: 7px; }
+.best { color: #65503c; }
+.panel { border: 3px solid var(--ink); background: #ffedc7; box-shadow: 5px 5px 0 var(--ink); padding: 18px 22px; }
+.round-info { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.round-info span { font-size: 13px; }
+.round-info b { font-size: 23px; }
+.stage { min-height: 139px; padding: 18px 0 12px; text-align: center; }
+h1, h2, p { margin-top: 0; }
+.stage h2 { font-size: clamp(19px, 4vw, 24px); margin-bottom: 8px; }
+.stage p { font-size: 14px; line-height: 1.45; margin-bottom: 14px; }
+.action { min-height: 52px; border: 3px solid var(--ink); background: var(--yellow); box-shadow: 4px 4px 0 var(--ink); padding: 12px 24px; font-size: 18px; }
+.action:hover { background: #ffe773; }
+.action:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 var(--ink); }
+.start { width: 100%; }
+.secondary { background: var(--paper); }
+.confirm { display: flex; justify-content: center; gap: 18px; }
+.clock { display: flex; justify-content: space-between; font-size: 12px; margin: 0 0 8px; }
+.track { height: 8px; background: #dfcda8; margin-bottom: 16px; }
+.track span { display: block; width: 100%; height: 100%; background: var(--green); transform-origin: left; }
+.board-frame { border: 5px solid var(--ink); padding: 15px; background: #a15b30; box-shadow: inset 0 0 0 4px #cf8a4b, 7px 7px 0 #422619; }
+.board { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; background: #ffedc7; padding: 15px; }
+.tile { aspect-ratio: 1; min-width: 0; padding: 5px; position: relative; border: 3px solid var(--ink); border-radius: 32%; background: #eac894; box-shadow: inset 4px 4px 0 #fff0c8, inset -4px -5px 0 #cc9d67; color: var(--ink); }
+.tile svg { width: 100%; height: 100%; display: none; }
+.tile.target { background: var(--yellow); }
+.tile.target svg, .tile.correct svg, .tile.missed svg { display: block; }
+.tile.selected { background: #f9d84c; box-shadow: inset 0 0 0 4px #fff1a4; }
+.tile.selected::after { content: '?'; font-size: clamp(20px,5vw,34px); }
+.tile.correct { background: #a5d989; box-shadow: inset 0 0 0 4px #cbedb3; }
+.tile.wrong { background: #f2a29a; box-shadow: none; }
+.tile.wrong::after { content: '×'; font-size: 36px; }
+.tile.missed { background: #ffe596; border-style: dashed; box-shadow: none; }
+.board-footer { display: flex; justify-content: space-between; margin: 18px 0 0; font-size: 12px; gap: 10px; }
+.sidekick { position: absolute; width: 175px; right: calc(100% + 36px); top: 270px; }
+.sidekick svg { width: 100%; }
+.bubble { background: white; border: 3px solid var(--ink); padding: 15px; line-height: 1.35; font-size: 14px; box-shadow: 4px 4px 0 var(--ink); }
+.right-sign { position: absolute; width: 160px; left: calc(100% + 38px); top: 385px; transform: rotate(5deg); background: #b9713c; border: 4px solid var(--ink); padding: 23px 12px; text-align: center; line-height: 1.5; box-shadow: 5px 5px 0 #62371e; }
+.right-sign span { color: #ffe276; }
+.share { margin: 44px auto 0; max-width: 600px; border-top: 2px solid #d9c7a7; padding: 26px 0; }
+.share h2 { font-size: 18px; margin-bottom: 8px; }
+.share p { font-size: 13px; line-height: 1.5; }
+.share .action { font-size: 14px; }
+footer { padding: 12px 0 38px; text-align: center; font-size: 12px; line-height: 1.8; color: #65503c; }
+a { color: inherit; }
+@media (max-width: 1050px) { .sidekick, .right-sign { display: none; } }
+@media (max-width: 520px) {
+    .shell { width: calc(100% - 28px); }
+    header { padding-top: 20px; }
+    .tagline { font-size: 10px; letter-spacing: .04em; }
+    .stats { padding: 12px 0; font-size: 11px; }
+    .stats strong { font-size: 19px; }
+    .panel { padding: 14px; }
+    .round-info b { font-size: 19px; }
+    .board-frame { padding: 8px; }
+    .board { padding: 9px; gap: 8px; }
+    .tile { padding: 2px; border-width: 2px; }
+    .stage { min-height: 143px; }
+    .board-footer { font-size: 11px; }
 }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
 
-a,
-button,
-input {
-  color: inherit;
-  font: inherit;
-}
-
-a {
-  text-decoration-thickness: 3px;
-  text-underline-offset: 3px;
-}
-
-button {
-  cursor: pointer;
-}
-
-img,
-.pixel {
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-}
-
-.page {
-  width: min(100% - 24px, 720px);
-  margin: 0 auto;
-  padding: 12px 0 28px;
-}
-
-.header {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: 10px;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  gap: 10px;
-}
-
-.brand-icon {
-  width: 62px;
-  height: 62px;
-  object-fit: contain;
-  flex: 0 0 auto;
-}
-
-.brand-title {
-  margin: 0;
-  color: #fff8e9;
-  font-size: clamp(31px, 5.2vw, 50px);
-  font-weight: 900;
-  line-height: .78;
-  letter-spacing: -.075em;
-  text-transform: uppercase;
-  text-shadow:
-    3px 0 0 var(--ink),
-    -3px 0 0 var(--ink),
-    0 3px 0 var(--ink),
-    0 -3px 0 var(--ink),
-    3px 3px 0 var(--ink),
-    -3px 3px 0 var(--ink),
-    3px -3px 0 var(--ink),
-    -3px -3px 0 var(--ink),
-    6px 6px 0 rgba(22, 14, 8, .12);
-}
-
-.brand-title .yellow {
-  color: var(--banana);
-}
-
-.score-card,
-.info-strip,
-.panel,
-.footer,
-.modal,
-.pixel-btn,
-.action,
-.footer-link,
-.copy-preview {
-  border-radius: 0;
-  clip-path: polygon(
-    8px 0,
-    calc(100% - 8px) 0,
-    calc(100% - 8px) 4px,
-    100% 4px,
-    100% calc(100% - 8px),
-    calc(100% - 4px) calc(100% - 8px),
-    calc(100% - 4px) 100%,
-    8px 100%,
-    8px calc(100% - 4px),
-    0 calc(100% - 4px),
-    0 8px,
-    4px 8px,
-    4px 4px,
-    8px 4px
-  );
-}
-
-.score-card {
-  min-width: 154px;
-  padding: 8px 10px 7px;
-  background: var(--panel);
-  border: var(--pixel) solid var(--ink);
-  box-shadow: 6px 6px 0 var(--ink);
-  text-align: center;
-}
-
-.score-card .eyebrow,
-.info-strip .eyebrow,
-.panel-title {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-}
-
-.score-number {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  margin-top: 2px;
-  font-size: 30px;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.small-banana {
-  width: 20px;
-  height: 20px;
-}
-
-.best {
-  margin-top: 4px;
-  color: #5b4d41;
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.info-strip {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-  padding: 8px 12px;
-  background: var(--panel);
-  border: var(--pixel) solid var(--ink);
-  box-shadow: 5px 5px 0 rgba(22, 14, 8, .14);
-}
-
-.info-left,
-.info-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
-
-.info-left {
-  white-space: nowrap;
-}
-
-.badge {
-  padding: 6px 8px 5px;
-  background: var(--brown-dark);
-  border: 3px solid var(--brown-light);
-  color: #fff7e8;
-  font-size: 20px;
-  font-weight: 900;
-  line-height: 1;
-  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18);
-}
-
-.big-num {
-  font-size: 22px;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.status {
-  overflow: hidden;
-  color: #45392f;
-  font-size: 12px;
-  font-weight: 900;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.board-panel {
-  position: relative;
-  width: min(100%, 500px);
-  margin: 0 auto 12px;
-  padding: 12px;
-  background:
-    linear-gradient(90deg, transparent 0 7px, rgba(255,255,255,.08) 7px 10px, transparent 10px 23px) 0 0 / 24px 100%,
-    linear-gradient(180deg, var(--brown-light), var(--brown));
-  border: 5px solid var(--brown-dark);
-  box-shadow:
-    0 7px 0 var(--brown-dark),
-    8px 8px 0 rgba(22, 14, 8, .13);
-}
-
-.board-panel::before,
-.board-panel::after {
-  content: "";
+:root { --ink: #241c13; --paper: #fff9e9; --yellow: #ffdc32; --green: #34744d; }
+body { background: radial-gradient(ellipse at top, #fffdf3, #f5ebd2); font-family: ui-rounded, 'Arial Rounded MT Bold', system-ui, sans-serif; }
+.shell { width: min(760px, 100% - 28px); }
+.play-screen { min-height: 100svh; padding: 8px 0 14px; display: flex; flex-direction: column; justify-content: center; }
+header { padding: 0; height: clamp(64px, 16svh, 125px); flex: none; }
+.logo { width: auto; max-width: 100%; height: calc(100% - 22px); object-fit: contain; }
+.tagline { margin: 4px 0 0; font-size: 9px; letter-spacing: .12em; }
+.game { width: min(460px, 100%); margin: 0 auto; }
+.stats { padding: 8px 2px; font-size: 10px; align-items: center; letter-spacing: .06em; }
+.stats strong { font-size: 21px; margin-left: 6px; }
+.panel { border: 0; box-shadow: none; border-radius: 12px; background: #e8e3cd; padding: 9px 14px; }
+.round-info span { font-size: 11px; }
+.round-info b { font-size: 18px; }
+.stage { min-height: 0; height: 58px; padding: 10px 0 5px; }
+.stage h2 { font-size: 18px; margin: 0 0 3px; letter-spacing: -.025em; }
+.stage p { font-size: 12px; line-height: 1.35; margin: 0; font-weight: 500; }
+.clock { font-size: 10px; margin: 0 2px 5px; }
+.track { height: 5px; border-radius: 9px; overflow: hidden; margin: 0 0 10px; background: #ded8be; }
+.track span { border-radius: inherit; }
+.board-frame { width: min(100%, 440px, calc(100svh - clamp(64px, 16svh, 125px) - 235px)); margin: auto; border: 3px solid var(--ink); padding: 7px; border-radius: 22px; background: #b57845; box-shadow: 0 5px 0 #654426; }
+.board { padding: 7px; gap: 7px; border-radius: 12px; background: #f8e7b9; }
+.tile { border: 2px solid #624a29; border-radius: 28%; background: #e7c68b; box-shadow: inset 0 3px 0 #fff1ca, 0 2px 0 #b4874e; padding: 2px; }
+.tile:not(:disabled):hover { background: #ffedaf; }
+.tile.selected { background: #ffdb39; border-color: var(--ink); }
+.tile.selected::after { font-size: clamp(18px, 4svh, 30px); }
+.tile.wrong::after { font-size: 26px; }
+.board-footer { font-size: 10px; margin: 12px 2px 0; }
+.action { min-height: 60px; border: 2px solid var(--ink); border-radius: 14px; box-shadow: 0 5px 0 var(--ink); padding: 14px 20px; font-size: 20px; font-weight: 900; }
+.action:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.confirm { gap: 12px; margin-top: 22px; }
+.confirm button { flex: 1; }
+.game[data-state="idle"] .stage,
+.game[data-state="confirm"] .stage,
+.game[data-state="success"] .stage,
+.game[data-state="failed"] .stage,
+.game[data-state="won"] .stage {
   position: absolute;
-  z-index: -1;
-  width: 28px;
-  height: 70%;
-  top: 15%;
-  background: var(--brown-dark);
-  opacity: .12;
+  z-index: 3; 
+  top: 50%; left: 50%;
+  transform: translate(-50%, -35%);
+  width: min(410px, calc(100% - 16px));
+  height: auto; padding: 28px 20px;
+  border: 3px solid var(--ink); border-radius: 24px;
+  background: #fffbee; box-shadow: 0 9px 0 #241c13, 0 18px 70px #241c1330;
+}
+.game[data-state="idle"] .stage h2,
+.game[data-state="confirm"] .stage h2,
+.game[data-state="success"] .stage h2,
+.game[data-state="failed"] .stage h2,
+.game[data-state="won"] .stage h2 { font-size: clamp(25px, 6vw, 34px); line-height: 1.02; margin-bottom: 14px; font-weight: 950; }
+.stage .start { margin-top: 22px; }
+.game:not([data-state="watch"]):not([data-state="pick"]) .clock { margin-top: 40px; }
+.game[data-state="idle"] .board { opacity: .4; }
+.share { margin: 16px auto 0; text-align: center; padding: 24px 0; }
+.share .action { min-height: 48px; font-size: 14px; }
+footer { font-size: 11px; }
+@media (max-height: 500px) and (min-width: 600px) {
+ .play-screen { flex-direction: row; align-items: center; gap: 24px; }
+ header { width: 35%; height: 125px; }
+ .game { width: 55%; }
+ .board-frame { width: min(100%, calc(100svh - 225px)); }
+ .stage { height: 48px; padding-top: 5px; }
+ .game:not([data-state="watch"]):not([data-state="pick"]) .clock { margin-top: 48px; }
+ .game .stage p { font-size: 11px; }
 }
 
-.board-panel::before {
-  left: -18px;
-}
-
-.board-panel::after {
-  right: -18px;
-}
-
-.board {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 9px;
-  padding: 11px;
-  background: #fffdf7;
-  border: 5px solid var(--brown-dark);
-  box-shadow: inset 0 0 0 4px #e9d8bb;
-}
-
-.tile {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1;
-  padding: 0;
-  border: 0;
-  background: none;
-}
-
-.tile::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(135deg, rgba(255,255,255,.55) 0 15%, transparent 16%),
-    var(--cream);
-  border: 4px solid var(--ink);
-  box-shadow: 0 4px 0 var(--ink);
-  clip-path: polygon(
-    25% 0,
-    75% 0,
-    75% 6%,
-    88% 6%,
-    88% 13%,
-    94% 13%,
-    94% 25%,
-    100% 25%,
-    100% 75%,
-    94% 75%,
-    94% 88%,
-    88% 88%,
-    88% 94%,
-    75% 94%,
-    75% 100%,
-    25% 100%,
-    25% 94%,
-    13% 94%,
-    13% 88%,
-    6% 88%,
-    6% 75%,
-    0 75%,
-    0 25%,
-    6% 25%,
-    6% 13%,
-    13% 13%,
-    13% 6%,
-    25% 6%
-  );
-}
-
-.tile .banana {
-  position: absolute;
-  inset: 0;
-  width: 64%;
-  height: 64%;
-  margin: auto;
-  opacity: 0;
-  transform: scale(.85);
-  pointer-events: none;
-}
-
-.tile.show::before,
-.tile.selected::before {
-  background:
-    linear-gradient(135deg, rgba(255,255,255,.5) 0 15%, transparent 16%),
-    var(--banana);
-}
-
-.tile.show .banana,
-.tile.reveal .banana {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.tile.wrong::before {
-  background: var(--red);
-}
-
-.tile:active::before {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 var(--ink);
-}
-
-.tile:focus-visible,
-.pixel-btn:focus-visible,
-.action:focus-visible,
-.footer-link:focus-visible {
-  outline: 4px solid #285dff;
-  outline-offset: 3px;
-}
-
-.main-action-wrap {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-.pixel-btn,
-.action,
-.footer-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  padding: 0 18px;
-  border: var(--pixel) solid var(--ink);
-  background: var(--banana);
-  box-shadow: 0 5px 0 #9c7100;
-  font-size: 18px;
-  font-weight: 900;
-  line-height: 1;
-  text-decoration: none;
-  text-transform: uppercase;
-}
-
-.pixel-btn[disabled] {
-  cursor: not-allowed;
-  opacity: .48;
-}
-
-.sub-panels {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.panel {
-  padding: 12px;
-  background: var(--panel);
-  border: var(--pixel) solid var(--ink);
-  box-shadow: 5px 5px 0 rgba(22, 14, 8, .13);
-}
-
-.panel-title {
-  margin-bottom: 8px;
-  font-size: 15px;
-}
-
-.share-actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.share-actions .pixel-btn {
-  min-height: 42px;
-  padding: 0 10px;
-  font-size: 14px;
-  box-shadow: 0 4px 0 #9c7100;
-}
-
-.copy-preview {
-  min-height: 58px;
-  margin: 0;
-  padding: 9px 10px;
-  background: #fffdf7;
-  border: 3px solid var(--ink);
-  color: #45382f;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.35;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.how-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.how-list li {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 6px;
-  font-size: 13px;
-  font-weight: 900;
-}
-
-.how-list img {
-  width: 16px;
-  height: 16px;
-  flex: 0 0 auto;
-}
-
-.footer {
-  margin-top: 10px;
-  padding: 10px;
-  background: var(--brown);
-  border: var(--pixel) solid var(--brown-dark);
-  box-shadow: 0 5px 0 var(--brown-dark);
-}
-
-.footer-copy {
-  margin-bottom: 8px;
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.footer-copy a {
-  color: var(--ink);
-  font-weight: 900;
-}
-
-.footer-link {
-  width: 100%;
-  min-height: 42px;
-  font-size: 14px;
-}
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: none;
-  place-items: center;
-  padding: 16px;
-  background: rgba(16, 12, 10, .72);
-}
-
-.overlay.show {
-  display: grid;
-}
-
-.modal {
-  width: min(100%, 390px);
-  padding: 14px;
-  background: var(--panel);
-  border: var(--pixel) solid var(--ink);
-  box-shadow: 8px 8px 0 rgba(22, 14, 8, .28);
-}
-
-.modal h2 {
-  margin: 0 0 6px;
-  font-size: 42px;
-  font-weight: 900;
-  line-height: .9;
-  text-transform: uppercase;
-}
-
-.modal p {
-  margin: 0 0 14px;
-  color: #544942;
-  font-size: 15px;
-  font-weight: 900;
-}
-
-.actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.action {
-  min-height: 48px;
-  background: #fffdf7;
-  box-shadow: 0 4px 0 rgba(16, 12, 10, .75);
-  font-size: 16px;
-}
-
-.action.primary {
-  background: var(--banana);
-}
-
-.speech {
-  position: absolute;
-  left: -134px;
-  bottom: 48px;
-  width: 126px;
-  padding: 9px;
-  background: #fffdf7;
-  border: var(--pixel) solid var(--ink);
-  box-shadow: 5px 5px 0 rgba(22, 14, 8, .12);
-  font-size: 13px;
-  font-weight: 900;
-  line-height: .95;
-  text-transform: uppercase;
-  clip-path: polygon(
-    8px 0,
-    calc(100% - 8px) 0,
-    calc(100% - 8px) 4px,
-    100% 4px,
-    100% calc(100% - 14px),
-    calc(100% - 10px) calc(100% - 14px),
-    calc(100% - 10px) 100%,
-    calc(100% - 26px) calc(100% - 14px),
-    8px calc(100% - 14px),
-    8px calc(100% - 10px),
-    0 calc(100% - 10px),
-    0 8px,
-    4px 8px,
-    4px 4px,
-    8px 4px
-  );
-}
-
-.speech::after {
-  display: none;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-@media (min-width: 1000px) {
-  body {
-    background:
-      linear-gradient(90deg, rgba(91, 58, 31, .04) 1px, transparent 1px) 0 0 / 24px 24px,
-      linear-gradient(rgba(91, 58, 31, .04) 1px, transparent 1px) 0 0 / 24px 24px,
-      #ead9b3;
-  }
-
-  .page {
-    margin-top: 14px;
-    margin-bottom: 14px;
-    padding: 14px 20px 24px;
-    background: #f8efd9;
-    border-left: 4px solid rgba(77, 42, 23, .14);
-    border-right: 4px solid rgba(77, 42, 23, .14);
-    box-shadow: 0 0 0 8px rgba(255, 255, 255, .16);
-  }
-}
-
-@media (max-width: 760px) {
-  .page {
-    width: min(100% - 16px, 640px);
-  }
-
-  .speech {
-    display: none;
-  }
-}
-
-@media (max-width: 560px) {
-  .header {
-    gap: 8px;
-  }
-
-  .brand-icon {
-    width: 48px;
-    height: 48px;
-  }
-
-  .brand-title {
-    font-size: clamp(25px, 9vw, 38px);
-    text-shadow:
-      2px 0 0 var(--ink),
-      -2px 0 0 var(--ink),
-      0 2px 0 var(--ink),
-      0 -2px 0 var(--ink),
-      2px 2px 0 var(--ink),
-      -2px 2px 0 var(--ink),
-      2px -2px 0 var(--ink),
-      -2px -2px 0 var(--ink);
-  }
-
-  .score-card {
-    min-width: 116px;
-    padding: 6px 7px 5px;
-    box-shadow: 4px 4px 0 var(--ink);
-  }
-
-  .score-number {
-    font-size: 22px;
-  }
-
-  .small-banana {
-    width: 15px;
-    height: 15px;
-  }
-
-  .best {
-    font-size: 10px;
-  }
-
-  .info-strip {
-    grid-template-columns: 1fr;
-    gap: 6px;
-    padding: 7px 9px;
-  }
-
-  .info-right {
-    display: none;
-  }
-
-  .badge {
-    font-size: 17px;
-  }
-
-  .big-num {
-    font-size: 18px;
-  }
-
-  .board-panel {
-    width: min(100%, 430px);
-    padding: 9px;
-  }
-
-  .board {
-    gap: 6px;
-    padding: 8px;
-  }
-
-  .tile::before {
-    border-width: 3px;
-    box-shadow: 0 3px 0 var(--ink);
-  }
-
-  .pixel-btn,
-  .footer-link,
-  .action {
-    min-height: 44px;
-    font-size: 15px;
-  }
-
-  .sub-panels {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-height: 820px) and (min-width: 700px) {
-  .page {
-    padding-top: 8px;
-  }
-
-  .header {
-    margin-bottom: 7px;
-  }
-
-  .brand-icon {
-    width: 54px;
-    height: 54px;
-  }
-
-  .brand-title {
-    font-size: 42px;
-  }
-
-  .score-card {
-    padding-top: 6px;
-    padding-bottom: 5px;
-  }
-
-  .info-strip {
-    margin-bottom: 7px;
-    padding-top: 6px;
-    padding-bottom: 6px;
-  }
-
-  .board-panel {
-    width: 455px;
-    padding: 10px;
-  }
-
-  .board {
-    gap: 7px;
-    padding: 9px;
-  }
-
-  .main-action-wrap {
-    margin-top: 8px;
-  }
-
-  .pixel-btn {
-    min-height: 43px;
-    font-size: 16px;
-  }
-}
 </style>
 </head>
 <body>
-<div class="page">
-  <header class="header">
-    <div class="brand">
-      <img class="brand-icon pixel" src="./assets/monkey-face.png" alt="Winking monkey face logo">
-      <h1 class="brand-title"><span>Monkey</span><br><span class="yellow">Memory</span></h1>
-    </div>
-    <aside class="score-card" aria-label="Score panel">
-      <p class="eyebrow">Score</p>
-      <div class="score-number"><img class="small-banana pixel" src="./assets/banana.png" alt=""><span id="score">0</span><img class="small-banana pixel" src="./assets/banana.png" alt=""></div>
-      <div class="best">YOUR BEST <span id="bestScore">0</span></div>
-    </aside>
+<div class="shell">
+<div class="play-screen">
+  <header>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 1000 300"
+      role="img"
+      aria-labelledby="monkey-memory-title"
+      style="display:block;width:100%;max-width:280px;height:auto;margin-inline:auto"
+    >
+      <title id="monkey-memory-title">Monkey Memory</title>
+
+      <defs>
+        <linearGradient id="mm-fur" x2=".3" y2="1">
+          <stop stop-color="#a64f2b"/>
+          <stop offset="1" stop-color="#934124"/>
+        </linearGradient>
+        <linearGradient id="mm-skin" x2="0" y2="1">
+          <stop stop-color="#ffe8b8"/>
+          <stop offset="1" stop-color="#ffdda0"/>
+        </linearGradient>
+        <linearGradient id="mm-yellow" x2="0" y2="1">
+          <stop stop-color="#ffe63a"/>
+          <stop offset="1" stop-color="#ffdc24"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Monkey: stepped outlines, ears, body and hair. -->
+      <g stroke="#090907" stroke-width="11" stroke-linejoin="round">
+        <path
+          fill="url(#mm-fur)"
+          d="M65 222H53V237H44V269H55V281H74V288H297V279H311V257H302V239H285V224Z"
+        />
+        <path
+          fill="url(#mm-skin)"
+          d="M91 104H69V99H43V109H25V120H13V134H3V174H13V187H24V199H42V210H77V199H92Z"
+        />
+        <path
+          fill="url(#mm-skin)"
+          d="M295 104H322V112H338V124H350V139H360V179H350V192H337V203H307V195H289Z"
+        />
+        <path
+          fill="url(#mm-fur)"
+          d="M85 191V88H96V72H108V62H130V50H164V38H179V28H191V7H232V18H244V29H221V42H215V53H256V62H270V72H282V83H292V100H302V190H291V213H277V225H250V235H126V224H106V211H94V191Z"
+        />
+      </g>
+
+      <!-- Ear details. -->
+      <path
+        fill="#080807"
+        d="M41 135H84V185H69V147H50V158H41ZM302 134H336V157H325V147H313V184H302Z"
+      />
+      <path
+        fill="#f9b777"
+        d="M51 148H68V183H60V170H51ZM314 148H325V169H314Z"
+      />
+
+      <!-- Face. -->
+      <path
+        fill="url(#mm-skin)"
+        d="M105 192V118H114V105H124V95H138V84H169V95H182V107H195V95H208V84H242V95H256V107H267V120H278V155H287V195H279V211H267V222H247V231H153V223H134V213H118V201H105Z"
+      />
+      <path
+        fill="#ffc38a"
+        d="M119 201H132V211H147V220H165V227H244V218H263V209H277V190H285V204H277V217H262V228H245V234H153V226H135V216H119Z"
+      />
+
+      <!-- Wink, open eye and nostrils. -->
+      <path
+        fill="#080907"
+        d="M132 123H167V136H178V158H132V146H157V136H132ZM233 105H248V155H222V116H233ZM185 162H193V172H185ZM202 162H210V172H202Z"
+      />
+
+      <!-- Smile and tongue. -->
+      <path
+        fill="#080907"
+        d="M146 172H163V184H175V191H211V179H234V170H247V161H262V178H271V216H261V233H247V240H230V231H221V216H211V204H165V195H155V185H146Z"
+      />
+      <path
+        fill="#f74958"
+        d="M238 178H251V190H261V216H253V231H236V219H229V205H220V190H233V198H240V189H238Z"
+      />
+      <path fill="#ff6871" d="M222 191H232V199H240V205H231V201H222Z"/>
+
+      <!-- Belly and body highlights. -->
+      <path
+        fill="url(#mm-skin)"
+        d="M170 250H188V238H218V250H231V278H170Z"
+      />
+      <path
+        fill="#b75d36"
+        d="M52 240H64V264H78V279H62V268H52ZM118 244H139V260H128V278H112V263H118Z"
+      />
+
+      <!-- Both middle fingers. -->
+      <g
+        fill="url(#mm-skin)"
+        stroke="#090907"
+        stroke-width="11"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M73 218H85V186H103V226H117V218H128V230H137V258H127V273H97V264H84V253H73Z"
+        />
+        <path
+          d="M274 228H287V199H305V231H317V220H331V232H343V257H331V271H316V279H289V270H277V259H265V239H274Z"
+        />
+      </g>
+
+      <!-- Chunky lettering. All letters are vector paths, not fonts. -->
+      <g
+        stroke="#080907"
+        stroke-width="17"
+        stroke-linejoin="round"
+        paint-order="stroke fill"
+      >
+        <g fill="#fffdf0">
+          <!-- M -->
+          <path d="M376 157V78H384V67H414V78H424V91H436V78H446V67H477V78H485V157H454V122H446V132H436V141H425V132H417V122H408V157Z"/>
+          <!-- O -->
+          <path
+            fill-rule="evenodd"
+            d="M506 67H555V76H565V85H572V141H564V150H555V157H506V149H497V141H491V85H497V76H506ZM522 98V126H539V98Z"
+          />
+          <!-- N -->
+          <path d="M582 157V67H614V78H625V89H636V99H642V67H675V157H644V148H635V137H625V124H614V122V157Z"/>
+          <!-- K -->
+          <path d="M684 157V67H716V91H726V80H738V67H768V90H760V100H751V109H743V118H752V127H761V137H768V157H739V148H729V137H718V133H716V157Z"/>
+          <!-- E -->
+          <path d="M779 67H854V91H815V103H842V124H815V133H854V157H779Z"/>
+          <!-- Y -->
+          <path d="M864 67H896V91H903V104H913V91H920V67H953V101H944V114H935V125H928V157H896V125H887V115H879V102H864Z"/>
+        </g>
+
+        <g fill="url(#mm-yellow)">
+          <!-- M -->
+          <path d="M373 258V183H381V172H409V183H419V194H431V183H442V172H473V183H481V258H451V229H442V239H431V247H420V239H412V229H404V258Z"/>
+          <!-- E -->
+          <path d="M490 172H563V196H524V207H552V227H524V235H563V258H490Z"/>
+          <!-- M -->
+          <path d="M573 258V183H581V172H609V183H619V194H631V183H642V172H673V183H681V258H651V229H642V239H631V247H620V239H612V229H604V258Z"/>
+          <!-- O -->
+          <path
+            fill-rule="evenodd"
+            d="M706 172H753V182H764V191H772V241H764V250H753V258H706V250H695V241H689V191H696V182H706ZM722 204V229H738V204Z"
+          />
+          <!-- R -->
+          <path
+            fill-rule="evenodd"
+            d="M781 172H845V183H856V213H847V224H841V232H849V242H857V258H825V247H817V235H812V258H781ZM812 196V209H826V196Z"
+          />
+          <!-- Y -->
+          <path d="M865 172H896V195H903V206H913V195H920V172H952V207H943V220H934V231H927V258H896V231H887V221H878V208H865Z"/>
+        </g>
+      </g>
+    </svg>
   </header>
-
-  <section class="info-strip" aria-label="Round info">
-    <div class="info-left">
-      <p class="eyebrow">Round</p>
-      <div class="badge" id="roundBadge">1</div>
-      <div class="big-num" id="needCount">3</div>
-      <div class="big-num">TO REMEMBER</div>
-    </div>
-    <div class="info-right">
-      <div class="status" id="status">Watch the bananas, you absolute melon.</div>
-    </div>
-  </section>
-
-  <section class="board-panel">
-    <div class="speech" id="speechBubble">THREE BANANAS. DON'T FUCK IT UP.</div>
-    <div class="board" id="board" aria-label="Memory grid"></div>
-    <div class="main-action-wrap">
-      <button class="pixel-btn" id="mainAction" type="button">START ROUND ▶</button>
-    </div>
-  </section>
-
-  <div class="sub-panels">
-    <section class="panel">
-      <h2 class="panel-title">Share your score</h2>
-      <div class="share-actions">
-        <button class="pixel-btn" id="shareBtn" type="button">Share score</button>
-        <button class="pixel-btn" id="copyBtn" type="button">Copy link</button>
-      </div>
-      <pre class="copy-preview" id="copyPreview">Score something first. Then annoy someone with it.</pre>
+  <main class="game" aria-label="Monkey Memory game">
+    <div class="stats"><span>SCORE <strong id="score">0</strong></span><span class="best">YOUR BEST <strong id="best">0</strong></span></div>
+    <div class="panel round-info"><span>ROUND <b id="round">1</b></span><span><b id="need">3</b> TO REMEMBER</span></div>
+    <section class="stage" aria-label="Game controls">
+    <div role="status" aria-live="polite"><h2 id="title">REMEMBER THE DAMN BANANAS.</h2><p id="message">They'll show for 1 second. Remember their spots.</p></div>
+    <button class="action start" id="start">START GAME →</button>
+    <div class="confirm" id="confirm" hidden><button class="action" id="yes">LOCK IT IN</button><button class="action secondary" id="no">CHANGE</button></div>
     </section>
+    <div class="clock"><span id="phase">READY WHEN YOU ARE.</span><span id="seconds" aria-hidden="true">—</span></div>
+    <div class="track" aria-hidden="true"><span id="timer"></span></div>
+    <div class="board-frame"><div class="board" id="board" aria-label="25 banana hiding places"></div></div>
+    <div class="board-footer"><span id="picked">0 / 3 picked</span><span id="hint">25 stupid circles.</span></div>
 
-    <section class="panel">
-      <h2 class="panel-title">How to play</h2>
-      <ul class="how-list">
-        <li><img class="pixel" src="./assets/banana.png" alt="">Watch the bananas.</li>
-        <li><img class="pixel" src="./assets/banana.png" alt="">Remember the spots.</li>
-        <li><img class="pixel" src="./assets/banana.png" alt="">Click the tiles.</li>
-        <li><img class="pixel" src="./assets/banana.png" alt="">Don't be a melon.</li>
-      </ul>
-    </section>
-  </div>
-
-  <footer class="footer">
-    <div class="footer-copy">Made by <a href="https://konradbuilds.github.io/">Konrad</a>. Questionable use of free time.</div>
-    <a class="footer-link" href="https://konradbuilds.github.io/">MORE SMALL INTERNET THINGS →</a>
-  </footer>
+  </main>
 </div>
-
-<div class="overlay" id="overlay">
-  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <h2 id="modalTitle">IS THAT IT?</h2>
-    <p id="modalText">Final answer, genius?</p>
-    <div class="actions">
-      <button class="action primary" id="yesBtn" type="button">YEAH</button>
-      <button class="action" id="noBtn" type="button">NAH</button>
-    </div>
-  </section>
+<section class="share"><h2>SHARE YOUR DAMAGE.</h2><p id="share-note">Score first. Then annoy someone with it.</p><button class="action secondary" id="share">SHARE SCORE ↗</button></section>
+<footer>Made by <a href="https://konradbuilds.github.io/">Konrad</a>. Questionable use of free time.<br>Your best score stays in this browser.</footer>
 </div>
-
 <script>
 (() => {
-  'use strict';
+    'use strict';
+    const $ = id => document.getElementById(id);
+    const banana = '<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#ffe13b" stroke="#28180f" stroke-width="2" d="M21 3h5v9h-3v7h-4v5h-5v3H6v-3H3v-6h5v3h5v-3h4v-5h3V7h1Z"/><path fill="#ffb92e" d="M25 12v6h-4v5h-5v3H7v-3h8v-3h5v-4h3v-4Z"/><path fill="#fff6b2" d="M7 19h2v3h5v2H7Z"/></svg>';
+    const cells = [];
+    let state = 'idle';
+    let round = 1;
+    let need = 3;
+    let score = 0;
+    let best = 0;
+    let answer = new Set();
+    let picked = new Set();
+    let frame;
+    let deadline = 0;
+    let duration = 0;
+    let remaining = 0;
+    try { best = Math.max(0, Number(localStorage.getItem('monkey-memory-best')) || 0); } catch (_) {}
+    $('best').textContent = best;
 
-  const GAME_URL = 'https://konradbuilds.github.io/monkey-memory/';
-  const storage = {
-    get(key, fallback) {
-      try {
-        const v = window.localStorage.getItem(key);
-        return v === null ? fallback : v;
-      } catch (e) {
-        return fallback;
-      }
-    },
-    set(key, value) {
-      try { window.localStorage.setItem(key, value); } catch (e) {}
+    function announce(title, message) {
+        $('title').textContent = title;
+        $('message').textContent = message;
     }
-  };
-
-  const board = document.getElementById('board');
-  const mainAction = document.getElementById('mainAction');
-  const shareBtn = document.getElementById('shareBtn');
-  const copyBtn = document.getElementById('copyBtn');
-  const copyPreview = document.getElementById('copyPreview');
-  const statusEl = document.getElementById('status');
-  const speechBubble = document.getElementById('speechBubble');
-  const scoreEl = document.getElementById('score');
-  const bestScoreEl = document.getElementById('bestScore');
-  const roundBadge = document.getElementById('roundBadge');
-  const needCount = document.getElementById('needCount');
-  const overlay = document.getElementById('overlay');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalText = document.getElementById('modalText');
-  const yesBtn = document.getElementById('yesBtn');
-  const noBtn = document.getElementById('noBtn');
-
-  const tiles = [];
-  let round = 1;
-  let need = 3;
-  let score = 0;
-  let bestScore = Number(storage.get('monkey-memory-best', '0')) || 0;
-  let answer = new Set();
-  let selected = new Set();
-  let phase = 'idle'; // idle, showing, guessing, solved, failed
-  let revealTimer = null;
-
-  bestScoreEl.textContent = bestScore;
-
-  for (let i = 0; i < 25; i++) {
-    const btn = document.createElement('button');
-    btn.className = 'tile';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', `Tile ${i + 1}`);
-    btn.innerHTML = '<img class="banana pixel" src="./assets/banana.png" alt="">';
-    btn.addEventListener('click', () => onTileClick(i));
-    board.appendChild(btn);
-    tiles.push(btn);
-  }
-
-  function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
-
-  function randomAnswer(count) {
-    const set = new Set();
-    while (set.size < count) set.add(Math.floor(Math.random() * 25));
-    return set;
-  }
-
-  function resetTileClasses() {
-    tiles.forEach(tile => tile.classList.remove('show', 'selected', 'wrong', 'reveal'));
-  }
-
-  function updateHeader() {
-    roundBadge.textContent = round;
-    needCount.textContent = need;
-    speechBubble.textContent = `${numberWord(need)} BANANAS. DON'T FUCK IT UP.`;
-  }
-
-  function numberWord(n) {
-    const words = ['ZERO','ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE','TEN'];
-    return words[n] || String(n);
-  }
-
-  function setStatus(text) { statusEl.textContent = text; }
-
-  function setPhase(next) {
-    phase = next;
-    if (next === 'idle') {
-      mainAction.disabled = false;
-      mainAction.textContent = round === 1 ? 'START ROUND ▶' : 'NEXT ROUND ▶';
-    } else if (next === 'showing') {
-      mainAction.disabled = true;
-      mainAction.textContent = 'LOOKING...';
-    } else if (next === 'guessing') {
-      mainAction.disabled = true;
-      mainAction.textContent = `${selected.size} / ${need} PICKED`;
-    } else if (next === 'solved') {
-      mainAction.disabled = false;
-      mainAction.textContent = 'NEXT ROUND ▶';
-    } else if (next === 'failed') {
-      mainAction.disabled = false;
-      mainAction.textContent = 'TRY AGAIN ▶';
+    function stopClock() { cancelAnimationFrame(frame); }
+    function runClock(ms, done) {
+        stopClock();
+        duration = ms;
+        deadline = performance.now() + ms;
+        function tick(now) {
+            remaining = Math.max(0, deadline - now);
+            $('seconds').textContent = (remaining / 1000).toFixed(1) + ' s';
+            $('timer').style.transform = `scaleX(${remaining / duration})`;
+            if (remaining > 0) frame = requestAnimationFrame(tick);
+            else done();
+        }
+        frame = requestAnimationFrame(tick);
     }
-  }
-
-  function updateMainActionCount() {
-    if (phase === 'guessing') mainAction.textContent = `${selected.size} / ${need} PICKED`;
-  }
-
-  function getShareText() {
-    const shareScore = Math.max(score, bestScore);
-    return `I scored ${shareScore} in Monkey Memory. Beat it, you overconfident idiot. ${GAME_URL}`;
-  }
-
-  function updateSharePreview(text) {
-    copyPreview.textContent = text || (Math.max(score, bestScore) > 0 ? getShareText() : 'Score something first. Then annoy someone with it.');
-  }
-
-  async function copyShare() {
-    const text = getShareText();
-    try {
-      await navigator.clipboard.writeText(text);
-      updateSharePreview(text);
-      copyBtn.textContent = 'COPIED. GOOD.';
-      setTimeout(() => { copyBtn.textContent = 'COPY LINK'; }, 1600);
-    } catch (e) {
-      updateSharePreview(text);
-      window.prompt('Copy this, idiot:', text);
+    function render() {
+        document.querySelector(".game").setAttribute("data-state", state);
+        cells.forEach((cell, i) => {
+            cell.className = 'tile';
+            const revealed = ['success', 'failed', 'won'].includes(state);
+            if (state === 'watch' && answer.has(i)) cell.classList.add('target');
+            if (revealed) {
+                if (answer.has(i)) cell.classList.add(picked.has(i) ? 'correct' : 'missed');
+                else if (picked.has(i)) cell.classList.add('wrong');
+            } else if (picked.has(i)) cell.classList.add('selected');
+            cell.disabled = !['pick', 'confirm'].includes(state);
+            cell.setAttribute('aria-pressed', String(picked.has(i)));
+            const label = `Row ${Math.floor(i / 5) + 1}, column ${i % 5 + 1}`;
+            cell.setAttribute('aria-label', label + ((state === 'watch' || revealed) && answer.has(i) ? ', banana' : ''));
+        });
+        $('picked').textContent = `${picked.size} / ${need} picked`;
+        $('round').textContent = round;
+        $('need').textContent = need;
+        $('score').textContent = score;
+        $('best').textContent = best;
     }
-  }
-
-  async function shareScore() {
-    const text = `I scored ${Math.max(score, bestScore)} in Monkey Memory. Beat it, you overconfident idiot.`;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: 'Monkey Memory', text, url: GAME_URL });
-        return;
-      } catch (e) {
-        if (e && e.name === 'AbortError') return;
-      }
+    function startRound() {
+        stopClock();
+        picked.clear();
+        const pool = Array.from({ length: 25 }, (_, i) => i);
+        for (let i = pool.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [pool[i], pool[j]] = [pool[j], pool[i]];
+        }
+        answer = new Set(pool.slice(0, need));
+        state = 'watch';
+        $('start').hidden = true;
+        $('confirm').hidden = true;
+        $('phase').textContent = 'LOOK. NO CLICKING YET.';
+        $('hint').textContent = 'Remember their positions.';
+        announce('WATCH CLOSELY.', `${need} bananas. You can manage that. Probably.`);
+        render();
+        runClock(Math.max(800, 2000 - (round - 1) * 90), beginPicking);
     }
-    await copyShare();
-  }
-
-  function beginRound() {
-    clearTimeout(revealTimer);
-    selected.clear();
-    answer = randomAnswer(need);
-    resetTileClasses();
-    updateHeader();
-    setStatus('Watch closely, you absolute melon.');
-    setPhase('showing');
-
-    answer.forEach(i => tiles[i].classList.add('show'));
-    const revealMs = Math.max(850, 1700 - (round - 1) * 70);
-    revealTimer = setTimeout(() => {
-      answer.forEach(i => tiles[i].classList.remove('show'));
-      setStatus('Well?');
-      setPhase('guessing');
-      updateMainActionCount();
-    }, revealMs);
-  }
-
-  function onTileClick(i) {
-    if (phase !== 'guessing') return;
-
-    if (selected.has(i)) {
-      selected.delete(i);
-      tiles[i].classList.remove('selected');
-    } else {
-      if (selected.size >= need) return;
-      selected.add(i);
-      tiles[i].classList.add('selected');
+    function beginPicking() {
+        state = 'pick';
+        $('phase').textContent = 'YOUR TURN.';
+        $('hint').textContent = 'Tap again to deselect.';
+        announce('WHERE WERE THEY?', `Pick ${need} hiding places. The clock is running.`);
+        render();
+        cells[0].focus({ preventScroll: true });
+        runClock(need * Math.max(850, 2000 - (round - 1) * 90), () => finish(false, true));
     }
-
-    updateMainActionCount();
-    if (selected.size === need) showConfirm();
-  }
-
-  function showConfirm() {
-    setPhase('guessing');
-    modalTitle.textContent = 'IS THAT IT?';
-    modalText.textContent = 'Final answer, genius?';
-    yesBtn.textContent = 'YEAH';
-    noBtn.textContent = 'NAH';
-    overlay.classList.add('show');
-    yesBtn.focus();
-  }
-
-  function setsEqual(a, b) {
-    return a.size === b.size && [...a].every(value => b.has(value));
-  }
-
-  function revealFailure() {
-    selected.forEach(i => { if (!answer.has(i)) tiles[i].classList.add('wrong'); });
-    answer.forEach(i => tiles[i].classList.add('reveal'));
-  }
-
-  function handleCorrect() {
-    overlay.classList.remove('show');
-    score += need * 10;
-    scoreEl.textContent = score;
-    if (score > bestScore) {
-      bestScore = score;
-      bestScoreEl.textContent = bestScore;
-      storage.set('monkey-memory-best', String(bestScore));
+    function select(i) {
+        if (!['pick', 'confirm'].includes(state)) return;
+        if (state === 'pick' && performance.now() >= deadline) { finish(false, true); return; }
+        if (picked.has(i)) picked.delete(i);
+        else if (picked.size < need) picked.add(i);
+        if (picked.size === need) {
+            remaining = Math.max(0, deadline - performance.now());
+            stopClock();
+            state = 'confirm';
+            $('confirm').hidden = false;
+            $('yes').focus({ preventScroll: true });
+            $('phase').textContent = 'CLOCK PAUSED. FINAL ANSWER?';
+            announce('IS THAT IT?', 'Final answer, genius?');
+        } else if (state === 'confirm') resumePicking();
+        render();
     }
-    updateSharePreview();
-    setStatus('Annoyingly, correct.');
-    round += 1;
-    need = Math.min(25, need + 1);
-    setPhase('solved');
-  }
-
-  function handleFail() {
-    overlay.classList.remove('show');
-    revealFailure();
-    setStatus('Good monkeys remember. Idiots don\'t.');
-    modalTitle.textContent = 'IDIOT.';
-    modalText.textContent = `You died at ${need}. Score: ${score}. Spectacular.`;
-    yesBtn.textContent = 'TRY AGAIN';
-    noBtn.textContent = 'I\'M WEAK';
-    setPhase('failed');
-    setTimeout(() => { overlay.classList.add('show'); yesBtn.focus(); }, 450);
-  }
-
-  function restartGame() {
-    overlay.classList.remove('show');
-    round = 1;
-    need = 3;
-    score = 0;
-    scoreEl.textContent = '0';
-    selected.clear();
-    answer.clear();
-    resetTileClasses();
-    updateHeader();
-    updateSharePreview();
-    setStatus('Watch the bananas, you absolute melon.');
-    setPhase('idle');
-  }
-
-  mainAction.addEventListener('click', () => {
-    if (phase === 'idle' || phase === 'solved') {
-      beginRound();
-      return;
+    function resumePicking() {
+        state = 'pick';
+        $('confirm').hidden = true;
+        $('phase').textContent = 'YOUR TURN.';
+        announce('HAVE ANOTHER LOOK.', 'Tap a selected circle to change your mind.');
+        runClock(remaining, () => finish(false, true));
+        render();
     }
-    if (phase === 'failed') {
-      restartGame();
+    function finish(correct, timedOut = false) {
+        stopClock();
+        $('confirm').hidden = true;
+        state = correct ? (need === 25 ? 'won' : 'success') : 'failed';
+        if (correct) {
+            score += need * 10;
+            best = Math.max(best, score);
+            try { localStorage.setItem('monkey-memory-best', String(best)); } catch (_) {}
+        }
+        announce(correct ? (state === 'won' ? 'ALL 25. ABSURD.' : 'ANNOYINGLY, CORRECT.') : (timedOut ? 'TIME’S UP.' : 'GAME OVER. IDIOT.'), correct ? `+${need * 10} points. ${state === 'won' ? 'You cleared the whole board.' : 'One more banana next round.'}` : `Score: ${score}. You made it to ${need} bananas.`);
+        $('phase').textContent = correct ? 'ROUND COMPLETE.' : 'HERE’S WHAT YOU MISSED.';
+        $('hint').textContent = correct ? 'Green = remembered.' : '';
+        $('start').textContent = state === 'success' ? 'NEXT ROUND →' : 'TRY AGAIN →';
+        $('start').hidden = false;
+        $('share-note').textContent = `Your best is ${best}. Send it to someone who talks too much.`;
+        render();
+        $('start').focus({ preventScroll: true });
     }
-  });
-
-  yesBtn.addEventListener('click', () => {
-    if (yesBtn.textContent === 'TRY AGAIN') {
-      restartGame();
-      return;
+    for (let i = 0; i < 25; i++) {
+        const cell = document.createElement('button');
+        cell.type = 'button';
+        cell.innerHTML = banana;
+        cell.addEventListener('click', () => select(i));
+        cell.addEventListener('keydown', event => {
+            const offsets = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 5, ArrowUp: -5 };
+            if (!(event.key in offsets)) return;
+            event.preventDefault();
+            cells[(i + offsets[event.key] + 25) % 25].focus();
+        });
+        cells.push(cell);
+        $('board').appendChild(cell);
     }
-    if (setsEqual(answer, selected)) handleCorrect();
-    else handleFail();
-  });
-
-  noBtn.addEventListener('click', () => {
-    if (noBtn.textContent === 'I\'M WEAK') {
-      modalText.textContent = 'Correct. Now press TRY AGAIN.';
-      return;
-    }
-    overlay.classList.remove('show');
-    updateMainActionCount();
-  });
-
-  shareBtn.addEventListener('click', shareScore);
-  copyBtn.addEventListener('click', copyShare);
-
-  updateHeader();
-  updateSharePreview();
-  setPhase('idle');
+    $('start').addEventListener('click', () => {
+        if (state === 'success') { round++; need++; }
+        else { round = 1; need = 3; score = 0; }
+        startRound();
+    });
+    $('yes').addEventListener('click', () => {
+        if (state === 'confirm') finish(picked.size === answer.size && [...picked].every(i => answer.has(i)));
+    });
+    $('no').addEventListener('click', () => {
+        if (state !== 'confirm') return;
+        resumePicking();
+        cells[[...picked][0] || 0].focus({ preventScroll: true });
+    });
+    $('share').addEventListener('click', async () => {
+        const text = `I scored ${best} in Monkey Memory. Beat it, you overconfident idiot.`;
+        const url = 'https://konradbuilds.github.io/monkey-memory/';
+        if (navigator.share) {
+            try { await navigator.share({ title: 'Monkey Memory', text, url }); return; }
+            catch (error) { if (error.name === 'AbortError') return; }
+        }
+        try { await navigator.clipboard.writeText(`${text} ${url}`); $('share-note').textContent = 'Copied. Go annoy someone.'; }
+        catch (_) { $('share-note').textContent = `${text} ${url}`; }
+    });
+    render();
 })();
 </script>
 </body>
