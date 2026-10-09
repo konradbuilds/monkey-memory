@@ -5,7 +5,7 @@ Author URL: https://konradbuilds.github.io/
 Github URL: https://github.com/konradbuilds/monkey-memory
 Play URL: https://konradbuilds.github.io/monkey-memory/
 License: GNU General Public License v3.0
-Version: 0.1.57
+Version: 0.1.59
 -->
 <html lang="en">
 <head>
@@ -140,9 +140,9 @@ header { padding: 0; height: clamp(64px, 16svh, 125px); flex: none; }
 .stage h2 { font-size: 18px; margin: 0 0 3px; letter-spacing: -.025em; }
 .stage p { font-size: 12px; line-height: 1.35; margin: 0; font-weight: 500; }
 .clock { font-size: 10px; margin: 0 2px 5px; }
-.track { height: 5px; border-radius: 9px; overflow: hidden; margin: 0 0 10px; background: #ded8be; }
-.track span { border-radius: inherit; }
-.board-frame { width: min(100%, 440px, calc(100svh - clamp(64px, 16svh, 125px) - 235px)); margin: auto; border: 3px solid var(--ink); padding: 7px; border-radius: 22px; background: #b57845; box-shadow: 0 5px 0 #654426; }
+.track { height: 10px; border-radius: 9px; overflow: hidden; margin: 0 0 10px; background: #ded8be; }
+.track span { border-radius: inherit; background: linear-gradient(to right, #e74838 0%, #ff942b 32%, #ffde38 65%, #a4db70 100%); }
+.board-frame { width: min(100%, 440px, calc(100svh - clamp(64px, 16svh, 125px) - 240px)); margin: auto; border: 3px solid var(--ink); padding: 7px; border-radius: 22px; background: #b57845; box-shadow: 0 5px 0 #654426; }
 .board { padding: 7px; gap: 7px; border-radius: 12px; background: #f8e7b9; }
 .tile { border: 2px solid #624a29; border-radius: 28%; background: #e7c68b; box-shadow: inset 0 3px 0 #fff1ca, 0 2px 0 #b4874e; padding: 2px; }
 .tile:not(:disabled):hover { background: #ffedaf; }
@@ -183,10 +183,72 @@ footer { font-size: 11px; }
  .play-screen { flex-direction: row; align-items: center; gap: 24px; }
  header { width: 35%; height: 125px; }
  .game { width: 55%; }
- .board-frame { width: min(100%, calc(100svh - 225px)); }
+ .board-frame { width: min(100%, calc(100svh - 230px)); }
  .stage { height: 48px; padding-top: 5px; }
  .game:not([data-state="watch"]):not([data-state="pick"]) .clock { margin-top: 48px; }
  .game .stage p { font-size: 11px; }
+}
+
+
+/* One seamless 1000px tile; no image requests or raster data. */
+body {
+    position: relative;
+    isolation: isolate;
+}
+body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: .1;
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20width%3D%221000%22%20height%3D%221000%22%20viewBox%3D%220%200%201000%201000%22%3E%3Cdefs%3E%3Cg%20id%3D%22banana%22%3E%3Cpath%20d%3D%22M55%204C65%2040%2040%2070%208%2052C36%2057%2052%2032%2049%2010ZM49%2010L48%203L56%202%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22palm%22%3E%3Cpath%20d%3D%22M32%2065Q43%2037%2034%2021M43%2065Q50%2040%2038%2021M36%2021Q14%200%203%2025Q21%2015%2036%2021Q18%2018%209%2042Q26%2027%2036%2021Q49%201%2066%2012Q48%2015%2036%2021Q62%2015%2070%2037Q47%2026%2036%2021M20%2067H57%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22code%22%3E%3Cpath%20d%3D%22M24%2017L6%2034L24%2051M48%2017L66%2034L48%2051M42%209L30%2060%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22glasses%22%3E%3Cpath%20d%3D%22M4%2023H29V43H10L4%2023ZM41%2023H66L60%2043H41ZM29%2027Q35%2022%2041%2027M4%2023L0%2016M66%2023L70%2016%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22face%22%3E%3Cpath%20d%3D%22M15%2022Q15%205%2035%205Q55%205%2055%2022C76%2012%2076%2046%2055%2040Q54%2062%2035%2062Q16%2062%2015%2040C-6%2046-6%2012%2015%2022ZM20%2025L29%2028L20%2031M45%2024V33M25%2044Q35%2054%2046%2043M33%2038H34M39%2038H40%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22hand%22%3E%3Cpath%20d%3D%22M18%2038V29Q18%2023%2025%2027V8Q25%201%2032%208V29Q38%2021%2042%2030Q49%2023%2053%2033Q61%2029%2061%2038V53L49%2066H29L14%2051L7%2038Q7%2028%2018%2038Z%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22pad%22%3E%3Cpath%20d%3D%22M15%2017H56L67%2027L70%2051Q67%2064%2055%2053L46%2044H25L15%2054Q0%2062%202%2047L5%2029ZM18%2026V41M11%2033H25M50%2030H52M58%2038H60M29%209H44V17%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22poop%22%3E%3Cpath%20d%3D%22M9%2053Q-1%2043%2014%2037Q6%2024%2025%2023Q20%2014%2034%204Q37%2019%2048%2022Q62%2025%2055%2037Q75%2047%2061%2056H12ZM14%2037H55M24%2024H48M29%2036V39M43%2036V39M29%2046Q36%2051%2043%2046%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22bolt%22%3E%3Cpath%20d%3D%22M36%203L12%2037H31L24%2066L57%2026H38L46%203Z%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22heart%22%3E%3Cpath%20d%3D%22M35%2060L5%2031V14H15V6H27L35%2015L43%206H55V14H65V31Z%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22cart%22%3E%3Cpath%20d%3D%22M13%207H57V63H13ZM21%207V30H49V7M22%2042H48V56H22M39%2013H44V25%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22star%22%3E%3Cpath%20d%3D%22M35%204L44%2024L67%2027L49%2042L54%2065L35%2053L15%2065L20%2042L3%2027L26%2024Z%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22logo%22%3E%3Cpath%20d%3D%22M65%20222H53V237H44V269H55V281H74V288H297V279H311V257H302V239H285V224Z%22%2F%3E%3Cpath%20d%3D%22M91%20104H69V99H43V109H25V120H13V134H3V174H13V187H24V199H42V210H77V199H92Z%22%2F%3E%3Cpath%20d%3D%22M295%20104H322V112H338V124H350V139H360V179H350V192H337V203H307V195H289Z%22%2F%3E%3Cpath%20d%3D%22M85%20191V88H96V72H108V62H130V50H164V38H179V28H191V7H232V18H244V29H221V42H215V53H256V62H270V72H282V83H292V100H302V190H291V213H277V225H250V235H126V224H106V211H94V191Z%22%2F%3E%3Cpath%20d%3D%22M41%20135H84V185H69V147H50V158H41ZM302%20134H336V157H325V147H313V184H302Z%22%2F%3E%3Cpath%20d%3D%22M51%20148H68V183H60V170H51ZM314%20148H325V169H314Z%22%2F%3E%3Cpath%20d%3D%22M105%20192V118H114V105H124V95H138V84H169V95H182V107H195V95H208V84H242V95H256V107H267V120H278V155H287V195H279V211H267V222H247V231H153V223H134V213H118V201H105Z%22%2F%3E%3Cpath%20d%3D%22M119%20201H132V211H147V220H165V227H244V218H263V209H277V190H285V204H277V217H262V228H245V234H153V226H135V216H119Z%22%2F%3E%3Cpath%20d%3D%22M132%20123H167V136H178V158H132V146H157V136H132ZM233%20105H248V155H222V116H233ZM185%20162H193V172H185ZM202%20162H210V172H202Z%22%2F%3E%3Cpath%20d%3D%22M146%20172H163V184H175V191H211V179H234V170H247V161H262V178H271V216H261V233H247V240H230V231H221V216H211V204H165V195H155V185H146Z%22%2F%3E%3Cpath%20d%3D%22M238%20178H251V190H261V216H253V231H236V219H229V205H220V190H233V198H240V189H238Z%22%2F%3E%3Cpath%20d%3D%22M222%20191H232V199H240V205H231V201H222Z%22%2F%3E%3Cpath%20d%3D%22M170%20250H188V238H218V250H231V278H170Z%22%2F%3E%3Cpath%20d%3D%22M52%20240H64V264H78V279H62V268H52ZM118%20244H139V260H128V278H112V263H118Z%22%2F%3E%3Cpath%20d%3D%22M73%20218H85V186H103V226H117V218H128V230H137V258H127V273H97V264H84V253H73Z%22%2F%3E%3Cpath%20d%3D%22M274%20228H287V199H305V231H317V220H331V232H343V257H331V271H316V279H289V270H277V259H265V239H274Z%22%2F%3E%3Cpath%20d%3D%22M376%20157V78H384V67H414V78H424V91H436V78H446V67H477V78H485V157H454V122H446V132H436V141H425V132H417V122H408V157Z%22%2F%3E%3Cpath%20d%3D%22M506%2067H555V76H565V85H572V141H564V150H555V157H506V149H497V141H491V85H497V76H506ZM522%2098V126H539V98Z%22%2F%3E%3Cpath%20d%3D%22M582%20157V67H614V78H625V89H636V99H642V67H675V157H644V148H635V137H625V124H614V122V157Z%22%2F%3E%3Cpath%20d%3D%22M684%20157V67H716V91H726V80H738V67H768V90H760V100H751V109H743V118H752V127H761V137H768V157H739V148H729V137H718V133H716V157Z%22%2F%3E%3Cpath%20d%3D%22M779%2067H854V91H815V103H842V124H815V133H854V157H779Z%22%2F%3E%3Cpath%20d%3D%22M864%2067H896V91H903V104H913V91H920V67H953V101H944V114H935V125H928V157H896V125H887V115H879V102H864Z%22%2F%3E%3Cpath%20d%3D%22M373%20258V183H381V172H409V183H419V194H431V183H442V172H473V183H481V258H451V229H442V239H431V247H420V239H412V229H404V258Z%22%2F%3E%3Cpath%20d%3D%22M490%20172H563V196H524V207H552V227H524V235H563V258H490Z%22%2F%3E%3Cpath%20d%3D%22M573%20258V183H581V172H609V183H619V194H631V183H642V172H673V183H681V258H651V229H642V239H631V247H620V239H612V229H604V258Z%22%2F%3E%3Cpath%20d%3D%22M706%20172H753V182H764V191H772V241H764V250H753V258H706V250H695V241H689V191H696V182H706ZM722%20204V229H738V204Z%22%2F%3E%3Cpath%20d%3D%22M781%20172H845V183H856V213H847V224H841V232H849V242H857V258H825V247H817V235H812V258H781ZM812%20196V209H826V196Z%22%2F%3E%3Cpath%20d%3D%22M865%20172H896V195H903V206H913V195H920V172H952V207H943V220H934V231H927V258H896V231H887V221H878V208H865Z%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22cassette%22%3E%3Cpath%20d%3D%22M5%2014H65V56H5ZM14%2022H56V38H14ZM24%2022V38M46%2022V38M18%2056L23%2045H47L52%2056%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22arcade%22%3E%3Cpath%20d%3D%22M15%204H54V42L64%2050V67H5V50L15%2042ZM22%2012H47V33H22ZM15%2042H54M18%2050V43M39%2049H43M49%2049H53M15%2058H53%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22ufo%22%3E%3Cpath%20d%3D%22M18%2030Q20%204%2035%204Q50%204%2052%2030M3%2030Q35%2018%2067%2030Q64%2046%2035%2046Q6%2046%203%2030ZM20%2054L14%2065M35%2055V69M50%2054L56%2065M17%2035H19M34%2037H36M51%2035H53%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22rocket%22%3E%3Cpath%20d%3D%22M24%2046Q15%2019%2035%203Q55%2019%2046%2046ZM24%2030L12%2041V55L24%2046M46%2030L58%2041V55L46%2046M29%2053L35%2067L41%2053M29%2023A6%206%200%201%200%2041%2023A6%206%200%201%200%2029%2023%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22coconut%22%3E%3Cpath%20d%3D%22M12%2027Q3%2058%2035%2065Q67%2058%2058%2027ZM12%2027Q35%2017%2058%2027M39%2025L49%206H62M20%2040Q17%2052%2029%2056M22%2028L18%2019L26%2014L35%2024%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22mushroom%22%3E%3Cpath%20d%3D%22M5%2039Q4%205%2035%205Q66%205%2065%2039ZM24%2039L20%2063Q35%2070%2050%2063L46%2039M26%2017A9%209%200%201%200%2044%2017A9%209%200%201%200%2026%2017M8%2025Q20%2023%2017%2038M62%2025Q50%2023%2053%2038M29%2049V54M41%2049V54%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22terminal%22%3E%3Cpath%20d%3D%22M5%2010H65V58H5ZM5%2021H65M12%2015H14M20%2015H22M14%2030L25%2038L14%2046M32%2046H48%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22icecream%22%3E%3Cpath%20d%3D%22M12%2030Q4%2014%2020%2012Q29%20-4%2042%209Q64%207%2059%2030ZM20%2032L35%2068L51%2032M26%2040L44%2048M30%2052L47%2038%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22pills%22%3E%3Cpath%20d%3D%22M10%2015Q24%201%2036%2015L58%2039Q71%2054%2056%2065Q43%2074%2032%2060L10%2036Q1%2025%2010%2015ZM22%2047L44%2024%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22atom%22%3E%3Cpath%20d%3D%22M3%2035C3%2014%2067%2014%2067%2035S3%2056%203%2035ZM19%207C37%20-3%2069%2053%2051%2063S1%2017%2019%207ZM51%207C69%2017%2037%2073%2019%2063S33%20-3%2051%207ZM32%2035A3%203%200%201%200%2038%2035A3%203%200%201%200%2032%2035%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22cloud%22%3E%3Cpath%20d%3D%22M16%2051C-4%2051-4%2028%2012%2026C8%204%2038%200%2045%2020C64%209%2077%2043%2058%2051Z%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22bird%22%3E%3Cpath%20d%3D%22M13%2053Q1%2031%2017%2015Q32%202%2048%2012Q62%2020%2057%2042L69%2049L48%2053Q34%2067%2013%2053ZM16%2027H30M37%2026H50M24%2027V33M43%2026V32M47%2042L58%2043M16%2015L9%205M21%2012L21%202%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22island%22%3E%3Cpath%20d%3D%22M2%2060Q34%2037%2068%2060ZM33%2052L38%2023M40%2051L43%2024M39%2023Q17%209%2010%2028Q26%2022%2039%2023Q38%202%2059%206Q43%2017%2039%2023Q66%209%2068%2030Q54%2022%2039%2023M2%2068Q18%2061%2035%2068Q51%2061%2068%2068%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22popsicle%22%3E%3Cpath%20d%3D%22M16%2047V21Q16%202%2035%202Q54%202%2054%2021V47ZM29%2047V62Q35%2074%2041%2062V47M27%2014V35M43%2014V35%22%2F%3E%3C%2Fg%3E%3Cg%20id%3D%22wink%22%3E%3Cpath%20d%3D%22M15%2022Q15%205%2035%205Q55%205%2055%2022C76%2012%2076%2046%2055%2040Q54%2062%2035%2062Q16%2062%2015%2040C-6%2046-6%2012%2015%2022ZM20%2026L29%2029L20%2032M44%2025V33M25%2045Q35%2053%2045%2044M32%2038H34M39%2038H41%22%2F%3E%3C%2Fg%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23654426%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M486%200C546%20167%20546%20333%20486%20500S426%20833%20486%201000M514%200C574%20167%20574%20333%20514%20500S454%20833%20514%201000%22%2F%3E%3Cpath%20stroke-dasharray%3D%2214%2020%22%20d%3D%22M500%200C560%20167%20560%20333%20500%20500S440%20833%20500%201000%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23banana%22%20transform%3D%22translate%28859%20464%29%20rotate%28-7%29%20scale%281.143%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.6%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23palm%22%20transform%3D%22translate%2817%20163%29%20rotate%28-31%29%20scale%281.163%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.6%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23palm%22%20transform%3D%22translate%281017%20163%29%20rotate%28-31%29%20scale%281.163%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.6%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23code%22%20transform%3D%22translate%28688%20781%29%20rotate%2827%29%20scale%281.102%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.7%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23glasses%22%20transform%3D%22translate%28927%20324%29%20rotate%28-14%29%20scale%280.816%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.7%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23face%22%20transform%3D%22translate%28226%20312%29%20rotate%2837%29%20scale%281.041%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.9%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23hand%22%20transform%3D%22translate%28617%2077%29%20rotate%28-23%29%20scale%280.898%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.3%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23pad%22%20transform%3D%22translate%28768%20305%29%20rotate%2824%29%20scale%281.143%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.6%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23poop%22%20transform%3D%22translate%28879%20797%29%20rotate%2841%29%20scale%281.163%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.6%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23bolt%22%20transform%3D%22translate%2818%20570%29%20rotate%2841%29%20scale%281.020%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.9%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23bolt%22%20transform%3D%22translate%281018%20570%29%20rotate%2841%29%20scale%281.020%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.9%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23heart%22%20transform%3D%22translate%28357%20758%29%20rotate%28-15%29%20scale%281.082%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.8%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23cart%22%20transform%3D%22translate%28797%20100%29%20rotate%28-30%29%20scale%281.184%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.5%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23star%22%20transform%3D%22translate%28185%20941%29%20rotate%28-22%29%20scale%280.837%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.6%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23logo%22%20transform%3D%22translate%28193%20117%29%20rotate%28-45%29%20scale%280.093%29%20translate%28-500%20-150%29%22%20stroke-width%3D%2232.2%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23cassette%22%20transform%3D%22translate%28390%20398%29%20rotate%28-20%29%20scale%280.918%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.3%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23arcade%22%20transform%3D%22translate%28893%20951%29%20rotate%28-49%29%20scale%280.837%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.6%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23ufo%22%20transform%3D%22translate%28379%20924%29%20rotate%288%29%20scale%280.959%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.1%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23rocket%22%20transform%3D%22translate%28776%20605%29%20rotate%28-32%29%20scale%281.082%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.8%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23coconut%22%20transform%3D%22translate%28170%20735%29%20rotate%28-41%29%20scale%281.184%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.5%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23mushroom%22%20transform%3D%22translate%28311%20525%29%20rotate%28-23%29%20scale%280.959%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.1%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23terminal%22%20transform%3D%22translate%28700%20456%29%20rotate%28-29%29%20scale%280.918%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.3%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23icecream%22%20transform%3D%22translate%2889%20442%29%20rotate%28-35%29%20scale%280.857%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.5%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23pills%22%20transform%3D%22translate%28714%20-35%29%20rotate%2810%29%20scale%280.857%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.5%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23pills%22%20transform%3D%22translate%28714%20965%29%20rotate%2810%29%20scale%280.857%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.5%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23atom%22%20transform%3D%22translate%2834%20859%29%20rotate%28-7%29%20scale%280.878%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.4%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23atom%22%20transform%3D%22translate%281034%20859%29%20rotate%28-7%29%20scale%280.878%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.4%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23cloud%22%20transform%3D%22translate%28405%20117%29%20rotate%287%29%20scale%281.061%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.8%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23bird%22%20transform%3D%22translate%28558%20631%29%20rotate%28-13%29%20scale%280.898%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.3%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23island%22%20transform%3D%22translate%28588%20901%29%20rotate%28-49%29%20scale%281.020%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.9%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23popsicle%22%20transform%3D%22translate%28360%20259%29%20rotate%2825%29%20scale%280.980%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.1%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23wink%22%20transform%3D%22translate%28647%20206%29%20rotate%28-17%29%20scale%280.857%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.5%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23banana%22%20transform%3D%22translate%2833%207%29%20rotate%28-9%29%20scale%281.102%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.7%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23banana%22%20transform%3D%22translate%2833%201007%29%20rotate%28-9%29%20scale%281.102%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.7%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23banana%22%20transform%3D%22translate%281033%207%29%20rotate%28-9%29%20scale%281.102%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.7%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23banana%22%20transform%3D%22translate%281033%201007%29%20rotate%28-9%29%20scale%281.102%29%20translate%28-35%20-35%29%22%20stroke-width%3D%222.7%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23code%22%20transform%3D%22translate%28181%20555%29%20rotate%2829%29%20scale%280.837%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.6%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23glasses%22%20transform%3D%22translate%2867%20307%29%20rotate%28-21%29%20scale%280.959%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.1%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23face%22%20transform%3D%22translate%2812%20721%29%20rotate%28-40%29%20scale%280.878%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.4%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23face%22%20transform%3D%22translate%281012%20721%29%20rotate%28-40%29%20scale%280.878%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.4%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23icecream%22%20transform%3D%22translate%28627%20344%29%20rotate%2819%29%20scale%280.837%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.6%22%2F%3E%3Cuse%20xlink%3Ahref%3D%22%23poop%22%20transform%3D%22translate%28544%20776%29%20rotate%28-26%29%20scale%280.816%29%20translate%28-35%20-35%29%22%20stroke-width%3D%223.7%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+    background-size: 250px 250px;
+    background-repeat: repeat;
+}
+.share-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+    text-align: left;
+}
+.share-columns .action {
+    width: 100%;
+}
+.share-example {
+    overflow-wrap: anywhere;
+    margin: 18px 0 0;
+    font-weight: 500;
+    white-space: pre-line;
+}
+.share-status {
+    min-height: 1.5em;
+    margin: 10px 0 0;
+}
+@media (max-width: 420px) {
+    .share-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+.lives { display: inline-flex; gap: 3px; font-size: 19px; line-height: 1; color: #a8a29a; }
+.lives .full { color: #cc3535; }
+.game[data-state="failed"] .stage {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: 100%;
+    margin: 12px 0 18px;
+    padding: 16px;
+}
+.game[data-state="failed"] .stage h2 { font-size: 24px; margin-bottom: 8px; }
+.game[data-state="failed"] .stage .start { margin-top: 12px; min-height: 48px; }
+.game[data-state="failed"] .clock { margin-top: 0; }
+.game[data-state="failed"] .board-frame { width: min(100%, 440px, calc(100svh - clamp(64px, 16svh, 125px) - 340px)); }
+@media (max-height: 600px) {
+    .game[data-state="failed"] .board-frame { width: min(100%, 260px); }
 }
 
 </style>
@@ -350,7 +412,7 @@ footer { font-size: 11px; }
     </svg>
   </header>
   <main class="game" aria-label="Monkey Memory game">
-    <div class="stats"><span>SCORE <strong id="score">0</strong></span><span class="best">YOUR BEST <strong id="best">0</strong></span></div>
+    <div class="stats"><span>SCORE <strong id="score">0</strong></span><span id="lives" class="lives" role="img" aria-label="1 of 3 lives"><span id="heart-1">♥</span><span id="heart-2">♥</span><span id="heart-3">♥</span></span><span class="best">BEST 🍌 <strong id="best">0</strong></span></div>
     <div class="panel round-info"><span>ROUND <b id="round">1</b></span><span><b id="need">3</b> TO REMEMBER</span></div>
     <section class="stage" aria-label="Game controls">
     <div role="status" aria-live="polite"><h2 id="title">REMEMBER THE DAMN BANANAS.</h2><p id="message">They'll show for 1 second. Remember their spots.</p></div>
@@ -364,7 +426,21 @@ footer { font-size: 11px; }
 
   </main>
 </div>
-<section class="share"><h2>SHARE YOUR DAMAGE.</h2><p id="share-note">Score first. Then annoy someone with it.</p><button class="action secondary" id="share">SHARE SCORE ↗</button></section>
+<section class="share">
+    <h2>SHARE YOUR DAMAGE.</h2>
+    <p id="share-note">Score first. Then annoy someone with it.</p>
+    <div class="share-columns">
+        <div>
+            <button class="action secondary" id="share">SHARE SCORE ↗</button>
+            <p class="share-example" id="share-example"></p>
+        </div>
+        <div>
+            <button class="action secondary" id="trash">COPY TRASH TALK ↗</button>
+            <p class="share-example" id="trash-example"></p>
+        </div>
+    </div>
+    <p class="share-status" id="share-status" role="status"></p>
+</section>
 <footer>Made by <a href="https://konradbuilds.github.io/">Konrad</a>. Questionable use of free time.<br>Your best score stays in this browser.</footer>
 </div>
 <script>
@@ -378,13 +454,15 @@ footer { font-size: 11px; }
     let need = 3;
     let score = 0;
     let best = 0;
+    let lives = 1;
+    let bonusAwarded = false;
     let answer = new Set();
     let picked = new Set();
     let frame;
     let deadline = 0;
     let duration = 0;
     let remaining = 0;
-    try { best = Math.max(0, Number(localStorage.getItem('monkey-memory-best')) || 0); } catch (_) {}
+    try { best = Math.min(25, Math.max(0, Math.floor(Number(localStorage.getItem('monkey-memory-best-bananas')) || 0))); } catch (_) {}
     $('best').textContent = best;
 
     function announce(title, message) {
@@ -399,7 +477,7 @@ footer { font-size: 11px; }
         function tick(now) {
             remaining = Math.max(0, deadline - now);
             $('seconds').textContent = (remaining / 1000).toFixed(1) + ' s';
-            $('timer').style.transform = `scaleX(${remaining / duration})`;
+            $('timer').style.clipPath = `inset(0 ${(1 - remaining / duration) * 100}% 0 0)`;
             if (remaining > 0) frame = requestAnimationFrame(tick);
             else done();
         }
@@ -425,6 +503,9 @@ footer { font-size: 11px; }
         $('need').textContent = need;
         $('score').textContent = score;
         $('best').textContent = best;
+        $('lives').setAttribute('aria-label', `${lives} of 3 lives`);
+        for (let i = 1; i <= 3; i++) $('heart-' + i).className = i <= lives ? 'full' : '';
+        updateShareExamples();
     }
     function startRound() {
         stopClock();
@@ -483,15 +564,19 @@ footer { font-size: 11px; }
         state = correct ? (need === 25 ? 'won' : 'success') : 'failed';
         if (correct) {
             score += need * 10;
-            best = Math.max(best, score);
-            try { localStorage.setItem('monkey-memory-best', String(best)); } catch (_) {}
+            best = Math.max(best, need);
+            try { localStorage.setItem('monkey-memory-best-bananas', String(best)); } catch (_) {}
         }
-        announce(correct ? (state === 'won' ? 'ALL 25. ABSURD.' : 'ANNOYINGLY, CORRECT.') : (timedOut ? 'TIME’S UP.' : 'GAME OVER. IDIOT.'), correct ? `+${need * 10} points. ${state === 'won' ? 'You cleared the whole board.' : 'One more banana next round.'}` : `Score: ${score}. You made it to ${need} bananas.`);
+        if (!correct) lives = Math.max(0, lives - 1);
+        const earnedBonus = correct && need === 9 && !bonusAwarded;
+        if (earnedBonus) { lives += 2; bonusAwarded = true; }
+        announce(correct ? (state === 'won' ? 'ALL 25. ABSURD.' : 'ANNOYINGLY, CORRECT.') : (timedOut ? 'TIME’S UP.' : lives > 0 ? 'ONE LIFE DOWN.' : 'GAME OVER. IDIOT.'), correct ? `+${need * 10} points. ${state === 'won' ? 'You cleared the whole board.' : 'One more banana next round.'}` : `Score: ${score}. You made it to ${need} bananas.`);
+        if (earnedBonus) announce('NOT BAD, CINDERELLA', '2 extra lives.');
         $('phase').textContent = correct ? 'ROUND COMPLETE.' : 'HERE’S WHAT YOU MISSED.';
         $('hint').textContent = correct ? 'Green = remembered.' : '';
-        $('start').textContent = state === 'success' ? 'NEXT ROUND →' : 'TRY AGAIN →';
+        $('start').textContent = state === 'success' ? 'NEXT ROUND →' : lives > 0 && state === 'failed' ? 'RETRY ROUND →' : 'TRY AGAIN →';
         $('start').hidden = false;
-        $('share-note').textContent = `Your best is ${best}. Send it to someone who talks too much.`;
+        $('share-note').textContent = `Your best is ${best} bananas. Send it to someone who talks too much.`;
         render();
         $('start').focus({ preventScroll: true });
     }
@@ -511,7 +596,7 @@ footer { font-size: 11px; }
     }
     $('start').addEventListener('click', () => {
         if (state === 'success') { round++; need++; }
-        else { round = 1; need = 3; score = 0; }
+        else if (state !== 'failed' || lives === 0) { round = 1; need = 3; score = 0; lives = 1; bonusAwarded = false; }
         startRound();
     });
     $('yes').addEventListener('click', () => {
@@ -522,15 +607,43 @@ footer { font-size: 11px; }
         resumePicking();
         cells[[...picked][0] || 0].focus({ preventScroll: true });
     });
-    $('share').addEventListener('click', async () => {
-        const text = `I scored ${best} in Monkey Memory. Beat it, you overconfident idiot.`;
-        const url = 'https://konradbuilds.github.io/monkey-memory/';
-        if (navigator.share) {
-            try { await navigator.share({ title: 'Monkey Memory', text, url }); return; }
-            catch (error) { if (error.name === 'AbortError') return; }
+    const gameUrl = 'https://konradbuilds.github.io/monkey-memory/';
+
+    function shareText(trash = false) {
+        return trash
+            ? `My high score is ${best} bananas in Monkey Memory. Beat it, you overconfident idiot.\n${gameUrl}`
+            : `My high score is ${best} bananas in Monkey Memory.\n${gameUrl}`;
+    }
+
+    function updateShareExamples() {
+        $('share-example').textContent = shareText();
+        $('trash-example').textContent = shareText(true);
+    }
+
+    async function copyShare(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            $('share-status').textContent = 'Copied. Go annoy someone.';
+        } catch (_) {
+            $('share-status').textContent = 'Couldn’t copy. Select and copy the example above.';
         }
-        try { await navigator.clipboard.writeText(`${text} ${url}`); $('share-note').textContent = 'Copied. Go annoy someone.'; }
-        catch (_) { $('share-note').textContent = `${text} ${url}`; }
+    }
+
+    $('trash').addEventListener('click', () => copyShare(shareText(true)));
+    $('share').addEventListener('click', async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Monkey Memory',
+                    text: `My high score is ${best} bananas in Monkey Memory.`,
+                    url: gameUrl
+                });
+                return;
+            } catch (error) {
+                if (error.name === 'AbortError') return;
+            }
+        }
+        await copyShare(shareText());
     });
     render();
 })();
